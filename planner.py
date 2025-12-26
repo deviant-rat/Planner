@@ -1,5 +1,14 @@
-todo_list= []
+import json
 id = 0
+try:
+    with open("tasks.json", "r", encoding="utf-8") as file_read:
+        file_dict = json.load(file_read)
+        id = file_dict["last_id"]
+        todo_list = file_dict["tasks"]
+        print(f"File opened successfuly. {id} tasks loaded")
+except:
+    todo_list= []
+
 while True:
     print("Waiting for your command")
     user_command = input(">")
@@ -7,15 +16,15 @@ while True:
         double = False
         name = input("Please, input the name \n >")
         for item in todo_list:
-            if item["Name"] == name:
+            if item["text"] == name:
                 double = True
         if double == True:        
             print("Item with this name alredy exists.")
         else:
             item = {
-                "ID": id,
-                "Name": name,
-                "Status": False
+                "id": id,
+                "text": name,
+                "done": False
             }                    
             id += 1
             todo_list.append(item)
@@ -27,26 +36,44 @@ while True:
             print('No items found')
         else:
             for item in todo_list:
-                if item["Status"] == True:
+                if item["done"] == True:
                     print("[x]", end=" ")
                 else:
                     print("[ ]", end=" ")
-                print(item["ID"], end=" ")
-                print(item["Name"])
+                print(item["id"], end=" ")
+                print(item["text"])
     elif user_command == "done":
-        name = input("Please, input the name \n >")
-        found = False
-        for item in todo_list:
-            if item["Name"] == name:
-                item["Status"] = True
-                found = True
-                break
-        if found == True:
-            print("Status changed successfuly")
+        if not todo_list:
+            print("No items in list")
         else:
-            print("Item not found")
+            name = input("Please, input the id \n >")
+            try:
+                user_id = int(name)
+            except ValueError:
+                print("Please enter a number")
+                continue
+            found = False
+            for item in todo_list:
+                if item["id"] == user_id:
+                    item["done"] = True
+                    found = True
+                    break
+            if found == True:
+                print("Status changed successfuly")
+            else:
+                print("Item not found")
     elif user_command == "exit":
         print("Goodbye!")
-        break
+        if not todo_list:
+            break
+        else:
+            tasks_data ={
+                "last_id": id,
+                "tasks": todo_list
+            }
+            with open("tasks.json", "w", encoding="utf-8") as write_file:
+                json.dump(tasks_data, write_file)
+            print("Tasks saved successfuly.")
+            break
     else:
         print("Command not found. For the full list of commands use 'help'")
