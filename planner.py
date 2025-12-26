@@ -1,11 +1,9 @@
 todo_list= []
 id = 0
-double = False
-found = False
 while True:
     print("Waiting for your command")
     user_command = input(">")
-    if (user_command == "add"):
+    if user_command == "add":
         double = False
         name = input("Please, input the name \n >")
         for item in todo_list:
@@ -22,10 +20,10 @@ while True:
             id += 1
             todo_list.append(item)
             print("Item added")         
-    elif(user_command == "help"):
-        print("1. add - adds new item, \n help 2. list - shows all items, \n 3. help - shows a list of commands \n 4. done - changes item Status to done \n 5. exit - closes the programm")
-    elif(user_command == "list"):
-        if id == 0:
+    elif user_command == "help":
+        print(" 1. add - adds new item, \n 2. list - shows all items, \n 3. help - shows a list of commands \n 4. done - changes item Status to done \n 5. exit - closes the programm")
+    elif user_command == "list":
+        if not todo_list:
             print('No items found')
         else:
             for item in todo_list:
@@ -35,18 +33,19 @@ while True:
                     print("[ ]", end=" ")
                 print(item["ID"], end=" ")
                 print(item["Name"])
-    elif(user_command == "done"):
+    elif user_command == "done":
         name = input("Please, input the name \n >")
         found = False
         for item in todo_list:
             if item["Name"] == name:
                 item["Status"] = True
                 found = True
+                break
         if found == True:
             print("Status changed successfuly")
         else:
             print("Item not found")
-    elif(user_command == "exit"):
+    elif user_command == "exit":
         print("Goodbye!")
         break
     else:
