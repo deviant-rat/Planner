@@ -1,13 +1,13 @@
 import json
-id = 0
 try:
     with open("tasks.json", "r", encoding="utf-8") as file_read:
         file_dict = json.load(file_read)
         id = file_dict["last_id"]
         todo_list = file_dict["tasks"]
-        print(f"File opened successfuly. {id} tasks loaded")
-except:
+        print(f"File opened successfuly. {len(todo_list)} tasks loaded")
+except(FileNotFoundError, json.JSONDecodeError):
     todo_list= []
+    id = 0
 
 while True:
     print("Waiting for your command")
