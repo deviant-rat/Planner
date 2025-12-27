@@ -30,7 +30,7 @@ while True:
             todo_list.append(item)
             print("Item added")         
     elif user_command == "help":
-        print(" 1. add - adds new item, \n 2. list - shows all items, \n 3. help - shows a list of commands \n 4. done - changes item Status to done \n 5. exit - closes the programm")
+        print(" 1. add - adds new item (names should be uniq), \n 2. list - shows all items, \n 3. help - shows a list of commands \n 4. done - changes item Status to done \n 5. exit - closes the programm")
     elif user_command == "list":
         if not todo_list:
             print('No items found')
@@ -64,16 +64,13 @@ while True:
                 print("Item not found")
     elif user_command == "exit":
         print("Goodbye!")
-        if not todo_list:
-            break
-        else:
-            tasks_data ={
-                "last_id": id,
-                "tasks": todo_list
-            }
-            with open("tasks.json", "w", encoding="utf-8") as write_file:
-                json.dump(tasks_data, write_file)
+        tasks_data ={
+            "last_id": id,                
+            "tasks": todo_list
+        }
+        with open("tasks.json", "w", encoding="utf-8") as write_file:
+            json.dump(tasks_data, write_file)            
             print("Tasks saved successfuly.")
-            break
+        break
     else:
         print("Command not found. For the full list of commands use 'help'")
