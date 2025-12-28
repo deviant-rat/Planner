@@ -12,7 +12,7 @@ def load_tasks():
         last_id = 0
     return (todo_list, last_id)
 
-def cheak_double(name, todo_list):
+def check_double(name, todo_list):
     if any(item["text"]==name for item in todo_list):
         print("Item with this name alredy exists.")
         return True
@@ -20,7 +20,7 @@ def cheak_double(name, todo_list):
 
 def add_task (todo_list, last_id):
     name = input("Please, input the name \n >")
-    if cheak_double(name, todo_list): return (last_id)
+    if check_double(name, todo_list): return (last_id)
     item = {
         "id": last_id,
         "text": name,
@@ -43,7 +43,7 @@ def list_tasks(todo_list):
             print(item["id"], end=" ")
             print(item["text"])
 
-def cheak_full(todo_list):
+def check_full(todo_list):
     if not todo_list:
         print("No items in list")
         return False
@@ -53,35 +53,37 @@ def get_user_id():
     user_id = input("Please, input the id \n >")
     try:
         user_id = int(user_id)
-        return True, user_id
+        return user_id
     except ValueError:
         print("Please, enter a number")
-        return False, user_id
+        return None
 
 def status_change(status, user_id, todo_list):
     for item in todo_list:
         if item["id"] == user_id:
             item["done"] = status
-            print("Status changed successfuly")
-            return
-    print("Item not found")
-    return
+            return True
+    return False
 
 def mark_done(todo_list):
-    if cheak_full(todo_list):
-        status, user_id = get_user_id()
-        if not status:
+    if check_full(todo_list):
+        user_id = get_user_id()
+        if user_id is None:
             return
-        status_change(True, user_id, todo_list)
-    return
+        if status_change(True, user_id, todo_list): 
+            print("Status changed successfuly")
+        else:
+            print("Item not found")
 
 def mark_undone(todo_list):
-    if cheak_full(todo_list):
-        status, user_id = get_user_id()
-        if not status:
+    if check_full(todo_list):
+        user_id = get_user_id()
+        if user_id is None:
             return
-        status_change(False, user_id, todo_list)
-    return
+        if status_change(False, user_id, todo_list):
+            print("Status changed successfuly")
+        else:
+            print("Item not found")
 
 def print_help():
     print(" 1. add - adds new item (names should be uniq), \n " \
@@ -101,48 +103,43 @@ def save_tasks(todo_list, last_id):
         print("Tasks saved successfuly.")
     
 def edit_task(todo_list):
-    if cheak_full(todo_list):
-        status, user_id = get_user_id()
-        if not status:
+    if check_full(todo_list):
+        user_id = get_user_id()
+        if user_id is None:
             return
         name = input("Please, input new name \n >")
-        if cheak_double(name, todo_list): return 
+        if check_double(name, todo_list): return 
         for item in todo_list:
             if item["id"] == user_id:
                 item["text"] = name
                 print("Name changed successfuly")
                 return
         print ("No item with such id exists")
-    return
 
 def remove_task(todo_list):
-    if cheak_full(todo_list):
-        status, user_id = get_user_id()
-        if not status: return
-        for item in todo_list:
-            if item["id"] == user_id:
-                todo_list.remove(item)
+    if check_full(todo_list):
+        user_id = get_user_id()
+        if user_id is None: return
+        count = len(todo_list)
+        for i in range(0, count):
+            if todo_list[i]["id"] == user_id:
+                todo_list.remove(todo_list[i])
                 print("Item deleted successfuly")
                 return
         print("No such item exists")
-    return
 
 def clear_done(todo_list):
-    if cheak_full(todo_list):
+    if check_full(todo_list):
         count = len(todo_list)
         for i in range(count-1, -1, -1):
             if todo_list[i]["done"]:
                 todo_list.remove(todo_list[i])
         print(f"{count - len(todo_list)} tasks are deleted")
-    return 
 
 def list_stats(todo_list):
     count = len(todo_list)
-    done = 0
-    for item in todo_list:
-        if item["done"]: done+=1
+    done = sum(1 for item in todo_list if item["done"])
     print(f"Total: {count}, Done: {done}, Pending: {count-done}")
-    return
 
 
 
