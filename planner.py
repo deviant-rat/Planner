@@ -88,7 +88,8 @@ def print_help():
     "2. list - shows all items, \n 3. help - shows a list of commands \n " \
     "4. done - changes item status to done \n 5. undone - changes item status to undone \n " \
     "6. exit - closes the programm, 7. change - changes the name of a task, \n " \
-    "8. remove - remove an item \n 9. clear - deletes all items with status done")
+    "8. remove - remove an item \n 9. clear - deletes all items with status done \n " \
+    "10. stats - shows statistics")
 
 def save_tasks(todo_list, last_id):
     tasks_data ={
@@ -135,6 +136,14 @@ def clear_done(todo_list):
         print(f"{count - len(todo_list)} tasks are deleted")
     return 
 
+def list_stats(todo_list):
+    count = len(todo_list)
+    done = 0
+    for item in todo_list:
+        if item["done"]: done+=1
+    print(f"Total: {count}, Done: {done}, Pending: {count-done}")
+    return
+
 
 
 def main():
@@ -158,6 +167,8 @@ def main():
             remove_task(todo_list)
         elif user_command == "clear":
             clear_done(todo_list)
+        elif user_command == "stats":
+            list_stats(todo_list)
         elif user_command == "exit":
             save_tasks(todo_list, last_id)
             print("Goodbye!")
