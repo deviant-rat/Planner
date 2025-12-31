@@ -31,17 +31,22 @@ def add_task (todo_list, last_id):
     print("Item added") 
     return (last_id)
 
+def print_task(item):
+    if item["done"] == True:
+        print("[x]", end=" ")
+    else:
+        print("[ ]", end=" ")
+    print(item["id"], end=" ")
+    print(item["text"])
+
+
 def list_tasks(todo_list):
     if not todo_list:
         print('No items found')
     else:
         for item in todo_list:
-            if item["done"] == True:
-                print("[x]", end=" ")
-            else:
-                print("[ ]", end=" ")
-            print(item["id"], end=" ")
-            print(item["text"])
+            print_task(item)
+            
 
 def check_full(todo_list):
     if not todo_list:
@@ -91,7 +96,11 @@ def print_help():
     "4. done - changes item status to done \n 5. undone - changes item status to undone \n " \
     "6. exit - closes the programm, 7. change - changes the name of a task, \n " \
     "8. remove - remove an item \n 9. clear - deletes all items with status done \n " \
-    "10. stats - shows statistics")
+    "10. stats - shows statistics \n " \
+    "11. print_done - print tasks with status done \n" \
+    "12. print_undone - print tasks with status not done \n" \
+    "13. find - find task by name \n" \
+    "14. words - print the frequency of words")
 
 def save_tasks(todo_list, last_id):
     tasks_data ={
@@ -139,7 +148,45 @@ def clear_done(todo_list):
 def list_stats(todo_list):
     count = len(todo_list)
     done = sum(1 for item in todo_list if item["done"])
+    stats_dict = {
+        "total": count,
+        "done": done,
+        "pending": count-done
+    }
     print(f"Total: {count}, Done: {done}, Pending: {count-done}")
+
+def filter_list(todo_list, status):
+    for item in todo_list:
+        if item["done"] == status:
+            print_task(item)
+
+
+def find_by_text(todo_list):
+    text_name = input("Please input the task's name \n >")
+    for item in todo_list:
+        if item["text"] == text_name: 
+            print_task(item)
+            return
+    print("No such task found")
+
+def add_new(my_list, my_name):
+    for item in my_list:
+        if item["text"] == my_name:
+            item["count"] = item["count"] + 1
+            return
+    new_item = {
+        "text": my_name,
+        "count": 1
+    }
+    my_list.append(new_item)
+
+def task_word_frequency(todo_list):
+    list_words = []
+    for item in todo_list:
+        new_words = item["text"].split()
+        for item2 in new_words:
+            add_new(list_words, item2)
+    print(list_words)
 
 
 
@@ -166,6 +213,14 @@ def main():
             clear_done(todo_list)
         elif user_command == "stats":
             list_stats(todo_list)
+        elif user_command == "print_done":
+            filter_list(todo_list, True)
+        elif user_command == "print_undone":
+            filter_list(todo_list, False)
+        elif user_command == "find":
+            find_by_text(todo_list)
+        elif user_command == "words":
+            task_word_frequency(todo_list)
         elif user_command == "exit":
             save_tasks(todo_list, last_id)
             print("Goodbye!")
